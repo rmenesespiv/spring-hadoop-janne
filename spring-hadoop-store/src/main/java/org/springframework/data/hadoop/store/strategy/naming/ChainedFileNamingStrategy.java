@@ -81,6 +81,15 @@ public class ChainedFileNamingStrategy implements FileNamingStrategy {
 		}
 	}
 
+	@Override
+	public ChainedFileNamingStrategy createInstance() {
+		ChainedFileNamingStrategy instance = new ChainedFileNamingStrategy();
+		for (FileNamingStrategy strategy : strategies.getItems()) {
+			instance.register(((FileNamingStrategyFactory<? extends FileNamingStrategy>)strategy).createInstance());
+		}
+		return instance;
+	}
+
 	/**
 	 * Sets the list of strategies. This clears all existing strategies.
 	 *

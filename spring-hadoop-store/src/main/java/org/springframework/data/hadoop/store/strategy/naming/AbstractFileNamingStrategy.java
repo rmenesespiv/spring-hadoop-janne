@@ -54,6 +54,9 @@ public abstract class AbstractFileNamingStrategy implements FileNamingStrategy, 
 		return path;
 	}
 
+	@Override
+	public abstract FileNamingStrategy createInstance();
+
 	/**
 	 * Sets the order.
 	 *

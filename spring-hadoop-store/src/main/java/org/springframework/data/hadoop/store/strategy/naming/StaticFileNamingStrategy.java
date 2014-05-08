@@ -92,6 +92,16 @@ public class StaticFileNamingStrategy extends AbstractFileNamingStrategy {
 		return path;
 	}
 
+	@Override
+	public StaticFileNamingStrategy createInstance() {
+		StaticFileNamingStrategy instance = new StaticFileNamingStrategy();
+		instance.setCodecInfo(getCodecInfo());
+		instance.setOrder(getOrder());
+		instance.setName(name);
+		instance.setPrefix(prefix);
+		return instance;
+	}
+
 	/**
 	 * Sets the file name part.
 	 *

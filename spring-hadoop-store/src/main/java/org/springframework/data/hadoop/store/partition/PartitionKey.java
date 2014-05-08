@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.hadoop.store.strategy.rollover;
+package org.springframework.data.hadoop.store.partition;
+
+import org.springframework.data.hadoop.store.PartitionDataStoreWriter;
 
 /**
- * A {@code RolloverStrategy} which simply never does a rollover.
+ * A {@code PartitionKey} represents an instructions for {@link PartitionStrategy}
+ * and {@link PartitionDataStoreWriter} how written entities should be partitioned.
  *
  * @author Janne Valkealahti
  *
+ * @param <K> the type of partition key
  */
-public class NoRolloverStrategy extends AbstractRolloverStrategy {
+public interface PartitionKey<K> {
 
-	@Override
-	public boolean hasRolled() {
-		return false;
-	}
-
-	@Override
-	public void reset() {
-	}
-
-	@Override
-	public NoRolloverStrategy createInstance() {
-		NoRolloverStrategy instance = new NoRolloverStrategy();
-		instance.setOrder(getOrder());
-		return instance;
-	}
+	/**
+	 * Gets the value of this partition key.
+	 *
+	 * @return the partition key value
+	 */
+	K getValue();
 
 }

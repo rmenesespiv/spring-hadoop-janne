@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.hadoop.store;
-
-import java.io.IOException;
-
-import org.springframework.data.hadoop.store.partition.PartitionKey;
+package org.springframework.data.hadoop.store.partition;
 
 /**
- * A {@code DataStorePartitionWriter} is an extension of {@link DataStoreWriter}
- * adding functionality to write entities using a {@link PartitionKey}.
+ * A {@code PartitionStrategy} is a strategy interface defining
+ * used {@link PartitionResolver} and {@link PartitionKeyResolver}.
  *
  * @author Janne Valkealahti
- * @author Rodrigo Meneses
  *
  * @param <T> the type of an entity to write
  * @param <K> the type of a {@link PartitionKey}
  */
-public interface PartitionDataStoreWriter<T,K> extends DataStoreWriter<T> {
+public interface PartitionStrategy<T,K> {
 
 	/**
-	 * Write an entity with an explicit partitioning key.
+	 * Gets the partition resolver.
 	 *
-	 * @param entity the entity to write
-	 * @param partitionKey the partition key
-	 * @throws IOException if an I/O error occurs
+	 * @return the partition resolver
 	 */
-	void write(T entity, PartitionKey<K> partitionKey) throws IOException;
+	PartitionResolver<K> getPartitionResolver();
+
+	/**
+	 * Gets the partition key resolver.
+	 *
+	 * @return the partition key resolver
+	 */
+	PartitionKeyResolver<T, K> getPartitionKeyResolver();
 
 }

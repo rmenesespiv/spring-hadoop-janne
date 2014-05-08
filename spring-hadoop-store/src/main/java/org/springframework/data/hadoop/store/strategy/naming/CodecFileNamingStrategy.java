@@ -82,4 +82,12 @@ public class CodecFileNamingStrategy extends AbstractFileNamingStrategy {
 		return path;
 	}
 
+	@Override
+	public CodecFileNamingStrategy createInstance() {
+		CodecFileNamingStrategy instance = new CodecFileNamingStrategy();
+		instance.setCodecInfo(getCodecInfo());
+		instance.setOrder(getOrder());
+		return instance;
+	}
+
 }

@@ -93,4 +93,12 @@ public class RollingFileNamingStrategy extends AbstractFileNamingStrategy {
 		this.prefix = prefix;
 	}
 
+	@Override
+	public RollingFileNamingStrategy createInstance() {
+		RollingFileNamingStrategy instance = new RollingFileNamingStrategy();
+		instance.setCodecInfo(getCodecInfo());
+		instance.setOrder(getOrder());
+		return instance;
+	}
+
 }

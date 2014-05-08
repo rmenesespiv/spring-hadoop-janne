@@ -24,7 +24,7 @@ import org.springframework.data.hadoop.store.codec.CodecInfo;
  * @author Janne Valkealahti
  *
  */
-public interface FileNamingStrategy {
+public interface FileNamingStrategy extends FileNamingStrategyFactory<FileNamingStrategy> {
 
 	/**
 	 * Resolve a current filename.
