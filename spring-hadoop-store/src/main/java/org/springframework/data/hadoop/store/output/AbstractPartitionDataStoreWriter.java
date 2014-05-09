@@ -42,9 +42,9 @@ import org.springframework.data.hadoop.store.support.LifecycleObjectSupport;
  * @param <T> the type of an entity to write
  * @param <K> the type of a {@link PartitionKey}
  */
-public abstract class AbstractDataStorePartitionWriter<T, K> extends LifecycleObjectSupport implements PartitionDataStoreWriter<T, K> {
+public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleObjectSupport implements PartitionDataStoreWriter<T, K> {
 
-	private final static Log log = LogFactory.getLog(AbstractDataStorePartitionWriter.class);
+	private final static Log log = LogFactory.getLog(AbstractPartitionDataStoreWriter.class);
 
 	private final Configuration configuration;
 
@@ -81,7 +81,7 @@ public abstract class AbstractDataStorePartitionWriter<T, K> extends LifecycleOb
 	 * @param codec the compression codec info
 	 * @param partitionStrategy the partition strategy
 	 */
-	public AbstractDataStorePartitionWriter(Configuration configuration, Path basePath, CodecInfo codec,
+	public AbstractPartitionDataStoreWriter(Configuration configuration, Path basePath, CodecInfo codec,
 			PartitionStrategy<T, K> partitionStrategy) {
 		super();
 		this.configuration = configuration;

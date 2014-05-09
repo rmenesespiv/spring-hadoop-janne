@@ -32,7 +32,7 @@ import org.springframework.data.hadoop.store.partition.PartitionStrategy;
  *
  * @param <K> the type of a {@link PartitionKey}
  */
-public class PartitionTextFileWriter<K> extends AbstractDataStorePartitionWriter<String, K> {
+public class PartitionTextFileWriter<K> extends AbstractPartitionDataStoreWriter<String, K> {
 
 	/**
 	 * Instantiates a new text file partitioned writer.

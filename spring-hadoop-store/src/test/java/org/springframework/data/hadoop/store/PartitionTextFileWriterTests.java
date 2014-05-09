@@ -38,7 +38,7 @@ import org.springframework.data.hadoop.store.strategy.naming.RollingFileNamingSt
 import org.springframework.data.hadoop.store.strategy.naming.StaticFileNamingStrategy;
 import org.springframework.data.hadoop.store.strategy.rollover.SizeRolloverStrategy;
 
-public class TextFilePartitionedWriterTests extends AbstractStoreTests {
+public class PartitionTextFileWriterTests extends AbstractStoreTests {
 
 	@Test
 	public void testWriteReadTextOneLine() throws IOException {
