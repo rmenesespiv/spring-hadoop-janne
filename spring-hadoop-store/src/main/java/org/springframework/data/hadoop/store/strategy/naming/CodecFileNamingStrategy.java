@@ -44,6 +44,9 @@ public class CodecFileNamingStrategy extends AbstractFileNamingStrategy {
 
 	@Override
 	public Path resolve(Path path) {
+		if (!isEnabled()) {
+			return path;
+		}
 		CodecInfo c = getCodecInfo();
 		String suffix = c != null ? "." + c.getDefaultSuffix() : "";
 		if (path != null) {
@@ -87,6 +90,7 @@ public class CodecFileNamingStrategy extends AbstractFileNamingStrategy {
 		CodecFileNamingStrategy instance = new CodecFileNamingStrategy();
 		instance.setCodecInfo(getCodecInfo());
 		instance.setOrder(getOrder());
+		instance.setEnabled(isEnabled());
 		return instance;
 	}
 
