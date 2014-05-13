@@ -28,7 +28,7 @@ import org.springframework.expression.MethodResolver;
  * a need to register via variables.
  *
  * @author Janne Valkealahti
- *
+ * @author Rodrigo Meneses
  */
 public class MessagePartitionKeyMethodResolver implements MethodResolver {
 
@@ -44,7 +44,7 @@ public class MessagePartitionKeyMethodResolver implements MethodResolver {
 			// arg2 if exists should be a timestamp
 			if (argumentTypes.size() == 1) {
 				return new DateFormatMethodExecutor("timestamp");
-			} else if (argumentTypes.size() == 2) {
+			} else if (argumentTypes.size() == 2 || argumentTypes.size()==3) {
 				return new DateFormatMethodExecutor(null);
 			} else {
 				throw new AccessException("Too many or missing arguments");
