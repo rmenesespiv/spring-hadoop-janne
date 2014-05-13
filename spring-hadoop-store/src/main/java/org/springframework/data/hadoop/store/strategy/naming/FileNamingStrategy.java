@@ -34,8 +34,13 @@ public interface FileNamingStrategy extends FileNamingStrategyFactory<FileNaming
 	Path resolve(Path path);
 
 	/**
-	 * Resets the strategy. This method should be called to prepare next filename in case
+	 * This method should be called to prepare next filename in case
 	 * strategy doesn't know how to do it automatically.
+	 */
+	void next();
+
+	/**
+	 * Resets the strategy to its original state.
 	 */
 	void reset();
 

@@ -59,7 +59,7 @@ public class UuidFileNamingStrategyTests {
 	public void testResolveWithGivenPath() {
 		UuidFileNamingStrategy strategy = new UuidFileNamingStrategy("fakeuuid");
 		assertThat(strategy.resolve(new Path("/foo/jee")).toString(), is("/foo/jee-fakeuuid"));
-		strategy.reset();
+		strategy.next();
 		assertThat(strategy.resolve(new Path("/foo/jee")).toString(), is("/foo/jee-fakeuuid"));
 	}
 

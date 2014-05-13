@@ -60,6 +60,13 @@ public class ChainedFileNamingStrategy implements FileNamingStrategy {
 	}
 
 	@Override
+	public void next() {
+		for (Iterator<? extends FileNamingStrategy> iterator = strategies.iterator(); iterator.hasNext();) {
+			iterator.next().next();
+		}
+	}
+
+	@Override
 	public void reset() {
 		for (Iterator<? extends FileNamingStrategy> iterator = strategies.iterator(); iterator.hasNext();) {
 			iterator.next().reset();

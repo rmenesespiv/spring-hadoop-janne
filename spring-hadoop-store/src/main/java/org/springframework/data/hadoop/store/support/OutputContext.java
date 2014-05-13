@@ -73,7 +73,7 @@ public class OutputContext {
 			rolloverStrategy.reset();
 		}
 		if (fileNamingStrategy != null) {
-			fileNamingStrategy.reset();
+			fileNamingStrategy.next();
 		}
 	}
 
@@ -100,7 +100,11 @@ public class OutputContext {
 	public Path init(Path path) {
 		log.info("Init from path=" + path);
 		if (fileNamingStrategy != null) {
-			return fileNamingStrategy.init(path);
+			Path p = fileNamingStrategy.init(path);
+			if (p != null) {
+				fileNamingStrategy.reset();
+			}
+			return p;
 		}
 		return null;
 	}

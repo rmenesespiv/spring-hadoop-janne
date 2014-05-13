@@ -61,6 +61,10 @@ public abstract class AbstractFileNamingStrategy implements FileNamingStrategy, 
 	}
 
 	@Override
+	public void reset() {
+	}
+
+	@Override
 	public abstract FileNamingStrategy createInstance();
 
 	/**

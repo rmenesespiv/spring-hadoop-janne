@@ -72,7 +72,7 @@ public class StaticFileNamingStrategy extends AbstractFileNamingStrategy {
 	}
 
 	@Override
-	public void reset() {
+	public void next() {
 		// we're static, nothing to do
 	}
 

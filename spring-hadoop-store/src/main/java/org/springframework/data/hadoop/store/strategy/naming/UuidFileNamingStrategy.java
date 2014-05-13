@@ -100,7 +100,7 @@ public class UuidFileNamingStrategy extends AbstractFileNamingStrategy {
 	}
 
 	@Override
-	public void reset() {
+	public void next() {
 	}
 
 	@Override

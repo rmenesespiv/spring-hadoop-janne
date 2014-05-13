@@ -49,8 +49,13 @@ public class RollingFileNamingStrategy extends AbstractFileNamingStrategy {
 	}
 
 	@Override
-	public void reset() {
+	public void next() {
 		counter++;
+	}
+
+	@Override
+	public void reset() {
+		counter = 0;
 	}
 
 	@Override

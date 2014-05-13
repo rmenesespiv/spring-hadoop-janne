@@ -55,9 +55,9 @@ public class RollingFileNamingStrategyTests {
 	public void testResolveWithGivenPath() {
 		RollingFileNamingStrategy strategy = new RollingFileNamingStrategy();
 		assertThat(strategy.resolve(new Path("/foo/jee")).toString(), is("/foo/jee-0"));
-		strategy.reset();
+		strategy.next();
 		assertThat(strategy.resolve(new Path("/foo/jee")).toString(), is("/foo/jee-1"));
-		strategy.reset();
+		strategy.next();
 		assertThat(strategy.resolve(new Path("/foo/jee")).toString(), is("/foo/jee-2"));
 	}
 

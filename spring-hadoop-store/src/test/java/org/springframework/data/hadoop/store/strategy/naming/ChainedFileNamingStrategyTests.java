@@ -83,21 +83,6 @@ public class ChainedFileNamingStrategyTests {
 		assertThat(strategy.resolve(null).toString(), is("base-fakeuuid-0.extension"));
 	}
 
-//	@Test
-	public void testInitOnlyTmps() {
-		List<FileNamingStrategy> strategies = new ArrayList<FileNamingStrategy>();
-		strategies.add(new StaticFileNamingStrategy("base"));
-		strategies.add(new UuidFileNamingStrategy("fakeuuid", true));
-		strategies.add(new RollingFileNamingStrategy());
-		strategies.add(new StaticFileNamingStrategy("extension", "."));
-
-		ChainedFileNamingStrategy strategy = new ChainedFileNamingStrategy(strategies);
-		assertThat(strategy.init(new Path("/foo/basefakeuuid-0.extension.tmp")), nullValue());
-		assertThat(strategy.resolve(null).toString(), is("basefakeuuid-1.extension"));
-//		strategy.reset();
-//		assertThat(strategy.resolve(null).toString(), is("basefakeuuid-2.extension"));
-	}
-
 	@Test
 	public void testFoo() {
 		List<FileNamingStrategy> strategies = new ArrayList<FileNamingStrategy>();
@@ -108,9 +93,8 @@ public class ChainedFileNamingStrategyTests {
 
 		ChainedFileNamingStrategy strategy = new ChainedFileNamingStrategy(strategies);
 		assertThat(strategy.init(new Path("/foo/base-fakeuuid-0.extension")), nullValue());
-//		strategy.init(new Path("/foo/basefakeuuid-0.extension"));
 		assertThat(strategy.resolve(null).toString(), is("base-fakeuuid-1.extension"));
-		strategy.reset();
+		strategy.next();
 		assertThat(strategy.resolve(null).toString(), is("base-fakeuuid-2.extension"));
 	}
 
@@ -124,9 +108,8 @@ public class ChainedFileNamingStrategyTests {
 
 		ChainedFileNamingStrategy strategy = new ChainedFileNamingStrategy(strategies);
 		assertThat(strategy.init(new Path("/foo/base-0.extension")), nullValue());
-//		strategy.init(new Path("/foo/basefakeuuid-0.extension"));
 		assertThat(strategy.resolve(null).toString(), is("base-1.extension"));
-		strategy.reset();
+		strategy.next();
 		assertThat(strategy.resolve(null).toString(), is("base-2.extension"));
 	}
 
