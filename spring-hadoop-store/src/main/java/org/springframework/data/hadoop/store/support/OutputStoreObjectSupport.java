@@ -70,34 +70,11 @@ public abstract class OutputStoreObjectSupport extends StoreObjectSupport {
     @Override
     protected void onInit() throws Exception {
     	super.onInit();
-
-    	FileStatus[] findFiles = findInitFiles(getPath());
-		log.info("XXX findFiles " + findFiles);
-
-		for (FileStatus status : findFiles) {
-			log.info("XXX findFiles " + status);
-			String name = status.getPath().getName();
-			if (StringUtils.hasText(prefix) && name.startsWith(prefix)) {
-				name = name.substring(0, prefix.length());
-			}
-			if (StringUtils.hasText(suffix) && name.endsWith(suffix)) {
-				name = name.substring(name.length() - suffix.length());
-			}
-			Path path = new Path(status.getPath().getParent(), name);
-			if (outputContext.init(path) == null) {
-				break;
-			}
-		}
-
-//    	outputContext.init(initPath);
+    	initOutputContext();
     }
 
     protected void initOutputContext() throws Exception {
-    	FileStatus[] findFiles = findInitFiles(getPath());
-		log.info("XXX findFiles " + findFiles);
-
-		for (FileStatus status : findFiles) {
-			log.info("XXX findFiles " + status);
+		for (FileStatus status : findInitFiles(getPath())) {
 			String name = status.getPath().getName();
 			if (StringUtils.hasText(prefix) && name.startsWith(prefix)) {
 				name = name.substring(prefix.length());
@@ -114,27 +91,8 @@ public abstract class OutputStoreObjectSupport extends StoreObjectSupport {
 
 	protected FileStatus[] findInitFiles(Path basePath) throws Exception {
 		FileSystem fileSystem = basePath.getFileSystem(getConfiguration());
-		log.info("XXX matching path " + basePath);
 		if (fileSystem.exists(basePath)) {
 			FileStatus[] fileStatuses = fileSystem.listStatus(basePath);
-//			FileStatus[] fileStatuses = fileSystem.listStatus(getPath(), new PathFilter() {
-//				@Override
-//				public boolean accept(Path path) {
-//					String name = path.getName();
-//					log.info("XXX accepting path " + path + " with name " + name);
-//					if (StringUtils.hasText(prefix) && name.startsWith(prefix)) {
-//						log.info("XXX return false for path " + path + " with prefix " + prefix);
-//						return false;
-//					}
-//					if (StringUtils.hasText(suffix) && name.endsWith(suffix)) {
-//						log.info("XXX return false for path " + path + " with suffix " + suffix);
-//						return false;
-//					}
-//					log.info("XXX return true for path " + path);
-//					return true;
-//				}
-//			});
-
 			Arrays.sort(fileStatuses, new Comparator<FileStatus>() {
 				public int compare(FileStatus f1, FileStatus f2) {
 					// newest first

@@ -15,24 +15,27 @@
  */
 package org.springframework.data.hadoop.store.expression;
 
-import java.util.Map;
-
-import org.springframework.data.hadoop.store.partition.GenericPartitionKey;
+import org.springframework.data.hadoop.store.partition.MessagePartitionKey;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.TypedValue;
+import org.springframework.messaging.Message;
 
 /**
- * A {@link PropertyAccessor} reading values from a backing map used
- * by a {@link GenericPartitionKey}.
+ * A {@link PropertyAccessor} reading values from a backing {@link Message} used by a
+ * {@link MessagePartitionKey}.
  *
  * @author Janne Valkealahti
  *
  */
-public class GenericPartitionKeyPropertyAccessor implements PropertyAccessor {
+public class MessagePartitionKeyPropertyAccessor implements PropertyAccessor {
 
-	private final static Class<?>[] CLASSES = new Class[]{Map.class};
+	private final static Class<?>[] CLASSES = new Class[] { Message.class };
+
+	private final static String PAYLOAD = "payload";
+
+	private final static String HEADERS = "headers";
 
 	@Override
 	public Class<?>[] getSpecificTargetClasses() {
@@ -41,10 +44,11 @@ public class GenericPartitionKeyPropertyAccessor implements PropertyAccessor {
 
 	@Override
 	public boolean canRead(EvaluationContext context, Object target, String name) throws AccessException {
-		if (target instanceof Map) {
-			Object object = ((Map<?, ?>)target).get(GenericPartitionKey.KEY_HEADERS);
-			if (object instanceof Map) {
-				return ((Map<?, ?>)object).containsKey(name);
+		if (target instanceof Message) {
+			if (PAYLOAD.equals(name) || HEADERS.equals(name)) {
+				return true;
+			} else {
+				return ((Message<?>) target).getHeaders().containsKey(name);
 			}
 		}
 		return false;
@@ -52,10 +56,13 @@ public class GenericPartitionKeyPropertyAccessor implements PropertyAccessor {
 
 	@Override
 	public TypedValue read(EvaluationContext context, Object target, String name) throws AccessException {
-		if (target instanceof Map) {
-			Object object = ((Map<?, ?>)target).get(GenericPartitionKey.KEY_HEADERS);
-			if (object instanceof Map) {
-				return new TypedValue(((Map<?, ?>)object).get(name));
+		if (target instanceof Message) {
+			if (PAYLOAD.equals(name)) {
+				return new TypedValue(((Message<?>) target).getPayload());
+			} else if (HEADERS.equals(name)) {
+				return new TypedValue(((Message<?>) target).getHeaders());
+			} else {
+				return new TypedValue(((Message<?>) target).getHeaders().get(name));
 			}
 		}
 		throw new AccessException("Unable to read " + target + " using " + name);

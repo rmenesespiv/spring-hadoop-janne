@@ -64,6 +64,8 @@ public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleOb
 
 	private long idleTimeout;
 
+	private volatile int maxOpenAttempts = AbstractDataStreamWriter.DEFAULT_MAX_OPEN_ATTEMPTS;
+
 	/** Used in-writing suffix if any */
 	private String suffix;
 
@@ -275,6 +277,14 @@ public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleOb
 
 	public CodecInfo getCodec() {
 		return codec;
+	}
+
+	public void setMaxOpenAttempts(int maxOpenAttempts) {
+		this.maxOpenAttempts = maxOpenAttempts;
+	}
+
+	public int getMaxOpenAttempts() {
+		return maxOpenAttempts;
 	}
 
 	/**

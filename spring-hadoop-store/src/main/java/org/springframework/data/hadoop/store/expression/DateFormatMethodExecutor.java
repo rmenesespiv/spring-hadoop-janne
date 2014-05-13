@@ -22,6 +22,7 @@ import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.MethodExecutor;
 import org.springframework.expression.TypedValue;
+import org.springframework.messaging.Message;
 
 /**
  * A {@link MethodExecutor} handling formatting using a {@link SimpleDateFormat}.
@@ -43,8 +44,8 @@ public class DateFormatMethodExecutor implements MethodExecutor {
 			SimpleDateFormat format = new SimpleDateFormat((String)arguments[0]);
 			return new TypedValue(format.format((Long)arguments[1]));
 		}
-		if (target instanceof Map) {
-			Map<?, ?> map = ((Map<?, ?>)target);
+		if (target instanceof Message<?>) {
+			Map<?, ?> map = ((Message<?>)target).getHeaders();
 			SimpleDateFormat format = new SimpleDateFormat((String)arguments[0]);
 			return new TypedValue(format.format(map.get(key)));
 		}

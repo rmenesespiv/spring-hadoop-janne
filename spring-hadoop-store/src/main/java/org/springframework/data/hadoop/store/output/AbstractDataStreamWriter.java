@@ -43,7 +43,7 @@ public abstract class AbstractDataStreamWriter extends OutputStoreObjectSupport 
 
 	private final static Log log = LogFactory.getLog(AbstractDataStreamWriter.class);
 
-	private final static int DEFAULT_MAX_OPEN_ATTEMPTS = 10;
+	public final static int DEFAULT_MAX_OPEN_ATTEMPTS = 10;
 
 	private volatile int maxOpenAttempts = DEFAULT_MAX_OPEN_ATTEMPTS;
 

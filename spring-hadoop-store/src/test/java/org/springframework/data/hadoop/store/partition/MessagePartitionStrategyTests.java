@@ -16,7 +16,6 @@
 package org.springframework.data.hadoop.store.partition;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -24,32 +23,29 @@ import java.util.Map;
 
 import org.apache.hadoop.fs.Path;
 import org.junit.Test;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
 /**
- * Tests for {@link GenericPartitionStrategy}.
+ * Tests for {@link MessagePartitionStrategy}.
  *
  * @author Janne Valkealahti
  *
  */
-public class GenericPartitionStrategyTests {
+public class MessagePartitionStrategyTests {
 
 	@Test
 	public void testSomething() {
-		String expression = "#headers[region] + '/' + dateFormat('yyyy/MM', #headers[timestamp])";
-		GenericPartitionStrategy<String> strategy = new GenericPartitionStrategy<String>(expression);
-		GenericPartitionKey key = new GenericPartitionKey();
+		String expression = "headers[region] + '/' + dateFormat('yyyy/MM', headers[timestamp])";
+		MessagePartitionStrategy<String> strategy = new MessagePartitionStrategy<String>(expression);
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers.put("region", "foo");
-		headers.put("timestamp", 0l);
-		key.put(GenericPartitionKey.KEY_HEADERS, headers);
-
+		Message<String> message = MessageBuilder.withPayload("jee").copyHeaders(headers).build();
+		MessagePartitionKey key = new MessagePartitionKey(message);
 		Path resolvedPath = strategy.getPartitionResolver().resolvePath(key);
 		assertThat(resolvedPath, notNullValue());
-
-		PartitionKey<Map<String, Object>> resolvedPartitionKey = strategy.getPartitionKeyResolver().resolvePartitionKey("foo");
-		assertThat(resolvedPartitionKey, nullValue());
-
-
+		PartitionKey<Message<?>> resolvedPartitionKey = strategy.getPartitionKeyResolver().resolvePartitionKey("foo");
+		assertThat(resolvedPartitionKey, notNullValue());
 	}
 
 }

@@ -60,7 +60,7 @@ public class OutputStoreObjectSupportTests {
 		support.setFileNamingStrategy(strategy);
 
 		TestUtils.callMethod("initOutputContext", support);
-		assertThat(strategy.resolve(null).toString(), is("basefakeuuid-1.extension"));
+		assertThat(strategy.resolve(null).toString(), is("base-fakeuuid-1.extension"));
 	}
 
 	private static class TestOutputStoreObjectSupport extends OutputStoreObjectSupport {

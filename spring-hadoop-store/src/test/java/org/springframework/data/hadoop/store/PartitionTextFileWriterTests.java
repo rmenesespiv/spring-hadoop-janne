@@ -19,6 +19,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +30,8 @@ import org.junit.Test;
 import org.springframework.data.hadoop.store.input.TextFileReader;
 import org.springframework.data.hadoop.store.output.PartitionTextFileWriter;
 import org.springframework.data.hadoop.store.partition.AbstractPartitionKey;
-import org.springframework.data.hadoop.store.partition.GenericPartitionKey;
-import org.springframework.data.hadoop.store.partition.GenericPartitionStrategy;
+import org.springframework.data.hadoop.store.partition.MessagePartitionKey;
+import org.springframework.data.hadoop.store.partition.MessagePartitionStrategy;
 import org.springframework.data.hadoop.store.partition.PartitionKey;
 import org.springframework.data.hadoop.store.partition.PartitionKeyResolver;
 import org.springframework.data.hadoop.store.partition.PartitionResolver;
@@ -37,23 +39,27 @@ import org.springframework.data.hadoop.store.partition.PartitionStrategy;
 import org.springframework.data.hadoop.store.strategy.naming.RollingFileNamingStrategy;
 import org.springframework.data.hadoop.store.strategy.naming.StaticFileNamingStrategy;
 import org.springframework.data.hadoop.store.strategy.rollover.SizeRolloverStrategy;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
 public class PartitionTextFileWriterTests extends AbstractStoreTests {
 
 	@Test
 	public void testWriteReadTextOneLine() throws IOException {
-		String expression = "#headers[region] + '/' + dateFormat('yyyy/MM', #headers[timestamp])";
+		String expression = "headers[region] + '/' + dateFormat('yyyy/MM', headers[timestamp])";
 		String[] dataArray = new String[] { DATA10 };
-		GenericPartitionStrategy<String> strategy = new GenericPartitionStrategy<String>(expression);
+		MessagePartitionStrategy<String> strategy = new MessagePartitionStrategy<String>(expression);
 
-		GenericPartitionKey key1 = new GenericPartitionKey();
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers.put("region", "foo");
-		headers.put("timestamp", 0l);
-		key1.setHeaders(headers);
+		Message<String> message = MessageBuilder.withPayload("jee").copyHeaders(headers).build();
+		String nowYYYYMM = new SimpleDateFormat("yyyy/MM").format(new Date());
 
-		PartitionTextFileWriter<Map<String, Object>> writer =
-				new PartitionTextFileWriter<Map<String,Object>>(testConfig, testDefaultPath, null, strategy);
+
+		MessagePartitionKey key1 = new MessagePartitionKey(message);
+
+		PartitionTextFileWriter<Message<?>> writer =
+				new PartitionTextFileWriter<Message<?>>(testConfig, testDefaultPath, null, strategy);
 		writer.setFileNamingStrategyFactory(new StaticFileNamingStrategy("bar"));
 
 		writer.write(dataArray[0], key1);
@@ -61,7 +67,7 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 		writer.close();
 
 		// /tmp/TextFilePartitionedWriterTests/default/01/01/1970
-		TextFileReader reader = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/1970/01/bar"), null);
+		TextFileReader reader = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/" + nowYYYYMM + "/bar"), null);
 		TestUtils.readDataAndAssert(reader, dataArray);
 
 	}
@@ -69,34 +75,34 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 	@Test
 	public void testWriteReadManyLinesWithNamingAndRollover() throws IOException {
 
-		String expression = "#headers[region] + '/' + dateFormat('yyyy/MM', #headers[timestamp])";
-		GenericPartitionStrategy<String> strategy = new GenericPartitionStrategy<String>(expression);
+		String expression = "headers[region] + '/' + dateFormat('yyyy/MM', headers[timestamp])";
+		MessagePartitionStrategy<String> strategy = new MessagePartitionStrategy<String>(expression);
 
-		PartitionTextFileWriter<Map<String, Object>> writer =
-				new PartitionTextFileWriter<Map<String,Object>>(testConfig, testDefaultPath, null, strategy);
+		PartitionTextFileWriter<Message<?>> writer =
+				new PartitionTextFileWriter<Message<?>>(testConfig, testDefaultPath, null, strategy);
 
 		writer.setFileNamingStrategyFactory(new RollingFileNamingStrategy());
 		writer.setRolloverStrategyFactory(new SizeRolloverStrategy(40));
 
-		long timestamp = 0;
 		for (String data : DATA09ARRAY) {
-			GenericPartitionKey key1 = new GenericPartitionKey();
 			Map<String, Object> headers = new HashMap<String, Object>();
 			headers.put("region", "foo");
-			headers.put("timestamp", timestamp++);
-			key1.put(GenericPartitionKey.KEY_HEADERS, headers);
+			Message<String> message = MessageBuilder.withPayload(data).copyHeaders(headers).build();
+			MessagePartitionKey key1 = new MessagePartitionKey(message);
 			writer.write(data, key1);
 		}
 		writer.flush();
 		writer.close();
 
-		TextFileReader reader1 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/1970/01/0"), null);
+		String nowYYYYMM = new SimpleDateFormat("yyyy/MM").format(new Date());
+
+		TextFileReader reader1 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/" + nowYYYYMM + "/0"), null);
 		List<String> splitData1 = TestUtils.readData(reader1);
 
-		TextFileReader reader2 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/1970/01/1"), null);
+		TextFileReader reader2 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/" + nowYYYYMM + "/1"), null);
 		List<String> splitData2 = TestUtils.readData(reader2);
 
-		TextFileReader reader3 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/1970/01/2"), null);
+		TextFileReader reader3 = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/" + nowYYYYMM + "/2"), null);
 		List<String> splitData3 = TestUtils.readData(reader3);
 
 		assertThat(splitData1.size() + splitData2.size() + splitData3.size(), is(DATA09ARRAY.length));

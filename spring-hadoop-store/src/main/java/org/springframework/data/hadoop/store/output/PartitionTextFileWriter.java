@@ -74,6 +74,7 @@ public class PartitionTextFileWriter<K> extends AbstractPartitionDataStoreWriter
 		writer.setOverwrite(isOverwrite());
 		writer.setInWritingPrefix(getInWritingPrefix());
 		writer.setInWritingSuffix(getInWritingSuffix());
+		writer.setMaxOpenAttempts(getMaxOpenAttempts());
 		writer.afterPropertiesSet();
 		writer.start();
 		return writer;

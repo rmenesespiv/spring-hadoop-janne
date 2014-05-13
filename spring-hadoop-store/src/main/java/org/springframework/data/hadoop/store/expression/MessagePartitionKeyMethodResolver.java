@@ -30,7 +30,7 @@ import org.springframework.expression.MethodResolver;
  * @author Janne Valkealahti
  *
  */
-public class GenericPartitionKeyMethodResolver implements MethodResolver {
+public class MessagePartitionKeyMethodResolver implements MethodResolver {
 
 	public final static String METHOD_DATEFORMAT = "dateformat";
 
