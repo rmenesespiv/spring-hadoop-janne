@@ -17,12 +17,12 @@ package org.springframework.data.hadoop.store.partition;
 
 /**
  * A {@code PartitionKeyResolver} is a strategy interface defining
- * entity is automatically translated into a matching {@link PartitionKey}.
+ * entity is automatically translated into a matching partition key.
  *
  * @author Janne Valkealahti
  *
  * @param <T> the type of an entity to write
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public interface PartitionKeyResolver<T, K> {
 
@@ -34,6 +34,6 @@ public interface PartitionKeyResolver<T, K> {
 	 * @param entity the entity
 	 * @return the partition key
 	 */
-	PartitionKey<K> resolvePartitionKey(T entity);
+	K resolvePartitionKey(T entity);
 
 }

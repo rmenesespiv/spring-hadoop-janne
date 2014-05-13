@@ -19,7 +19,7 @@ package org.springframework.data.hadoop.store.partition;
  * Base implementation of {@link PartitionStrategy}.
  *
  * @param <T> the type of an entity to write
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public abstract class AbstractPartitionStrategy<T, K> implements PartitionStrategy<T, K> {
 

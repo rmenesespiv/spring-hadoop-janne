@@ -22,7 +22,7 @@ package org.springframework.data.hadoop.store.partition;
  * @author Janne Valkealahti
  *
  * @param <T> the type of an entity to write
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public interface PartitionStrategy<T,K> {
 

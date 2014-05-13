@@ -17,17 +17,15 @@ package org.springframework.data.hadoop.store;
 
 import java.io.IOException;
 
-import org.springframework.data.hadoop.store.partition.PartitionKey;
-
 /**
  * A {@code DataStorePartitionWriter} is an extension of {@link DataStoreWriter}
- * adding functionality to write entities using a {@link PartitionKey}.
+ * adding functionality to write entities using a partition key.
  *
  * @author Janne Valkealahti
  * @author Rodrigo Meneses
  *
  * @param <T> the type of an entity to write
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public interface PartitionDataStoreWriter<T,K> extends DataStoreWriter<T> {
 
@@ -38,6 +36,6 @@ public interface PartitionDataStoreWriter<T,K> extends DataStoreWriter<T> {
 	 * @param partitionKey the partition key
 	 * @throws IOException if an I/O error occurs
 	 */
-	void write(T entity, PartitionKey<K> partitionKey) throws IOException;
+	void write(T entity, K partitionKey) throws IOException;
 
 }

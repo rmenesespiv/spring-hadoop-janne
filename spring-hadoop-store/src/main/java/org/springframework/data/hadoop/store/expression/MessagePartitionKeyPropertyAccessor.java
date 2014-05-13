@@ -15,7 +15,6 @@
  */
 package org.springframework.data.hadoop.store.expression;
 
-import org.springframework.data.hadoop.store.partition.MessagePartitionKey;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.PropertyAccessor;
@@ -24,7 +23,7 @@ import org.springframework.messaging.Message;
 
 /**
  * A {@link PropertyAccessor} reading values from a backing {@link Message} used by a
- * {@link MessagePartitionKey}.
+ * partition key.
  *
  * @author Janne Valkealahti
  *

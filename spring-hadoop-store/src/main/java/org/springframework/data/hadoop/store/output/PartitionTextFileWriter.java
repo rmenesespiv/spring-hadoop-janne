@@ -17,10 +17,9 @@ package org.springframework.data.hadoop.store.output;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.springframework.data.hadoop.store.PartitionDataStoreWriter;
 import org.springframework.data.hadoop.store.DataStoreWriter;
+import org.springframework.data.hadoop.store.PartitionDataStoreWriter;
 import org.springframework.data.hadoop.store.codec.CodecInfo;
-import org.springframework.data.hadoop.store.partition.PartitionKey;
 import org.springframework.data.hadoop.store.partition.PartitionStrategy;
 
 /**
@@ -30,7 +29,7 @@ import org.springframework.data.hadoop.store.partition.PartitionStrategy;
  * @author Janne Valkealahti
  * @author Rodrigo Meneses
  *
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public class PartitionTextFileWriter<K> extends AbstractPartitionDataStoreWriter<String, K> {
 

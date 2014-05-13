@@ -29,10 +29,7 @@ import org.apache.hadoop.fs.Path;
 import org.junit.Test;
 import org.springframework.data.hadoop.store.input.TextFileReader;
 import org.springframework.data.hadoop.store.output.PartitionTextFileWriter;
-import org.springframework.data.hadoop.store.partition.AbstractPartitionKey;
-import org.springframework.data.hadoop.store.partition.MessagePartitionKey;
 import org.springframework.data.hadoop.store.partition.MessagePartitionStrategy;
-import org.springframework.data.hadoop.store.partition.PartitionKey;
 import org.springframework.data.hadoop.store.partition.PartitionKeyResolver;
 import org.springframework.data.hadoop.store.partition.PartitionResolver;
 import org.springframework.data.hadoop.store.partition.PartitionStrategy;
@@ -55,21 +52,16 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 		Message<String> message = MessageBuilder.withPayload("jee").copyHeaders(headers).build();
 		String nowYYYYMM = new SimpleDateFormat("yyyy/MM").format(new Date());
 
-
-		MessagePartitionKey key1 = new MessagePartitionKey(message);
-
 		PartitionTextFileWriter<Message<?>> writer =
 				new PartitionTextFileWriter<Message<?>>(testConfig, testDefaultPath, null, strategy);
 		writer.setFileNamingStrategyFactory(new StaticFileNamingStrategy("bar"));
 
-		writer.write(dataArray[0], key1);
+		writer.write(dataArray[0], message);
 		writer.flush();
 		writer.close();
 
-		// /tmp/TextFilePartitionedWriterTests/default/01/01/1970
 		TextFileReader reader = new TextFileReader(testConfig, new Path(testDefaultPath, "foo/" + nowYYYYMM + "/bar"), null);
 		TestUtils.readDataAndAssert(reader, dataArray);
-
 	}
 
 	@Test
@@ -88,8 +80,7 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 			Map<String, Object> headers = new HashMap<String, Object>();
 			headers.put("region", "foo");
 			Message<String> message = MessageBuilder.withPayload(data).copyHeaders(headers).build();
-			MessagePartitionKey key1 = new MessagePartitionKey(message);
-			writer.write(data, key1);
+			writer.write(data, message);
 		}
 		writer.flush();
 		writer.close();
@@ -114,21 +105,18 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 		String[] dataArray2 = new String[] { "customer2-1", "customer2-2", "customer2-3" };
 		String[] dataArray3 = new String[] { "customer3-1", "customer3-2", "customer3-3" };
 		CustomerPartitionStrategy strategy = new CustomerPartitionStrategy();
-		CustomerPartitionKey key1 = new CustomerPartitionKey("customer1");
-		CustomerPartitionKey key2 = new CustomerPartitionKey("customer2");
-		CustomerPartitionKey key3 = new CustomerPartitionKey("customer3");
 		PartitionTextFileWriter<String> writer =
 				new PartitionTextFileWriter<String>(testConfig, testDefaultPath, null, strategy);
 
-		writer.write(dataArray1[0], key1);
-		writer.write(dataArray1[1], key1);
-		writer.write(dataArray1[2], key1);
-		writer.write(dataArray2[0], key2);
-		writer.write(dataArray2[1], key2);
-		writer.write(dataArray2[2], key2);
-		writer.write(dataArray3[0], key3);
-		writer.write(dataArray3[1], key3);
-		writer.write(dataArray3[2], key3);
+		writer.write(dataArray1[0], "customer1");
+		writer.write(dataArray1[1], "customer1");
+		writer.write(dataArray1[2], "customer1");
+		writer.write(dataArray2[0], "customer2");
+		writer.write(dataArray2[1], "customer2");
+		writer.write(dataArray2[2], "customer2");
+		writer.write(dataArray3[0], "customer3");
+		writer.write(dataArray3[1], "customer3");
+		writer.write(dataArray3[2], "customer3");
 		writer.flush();
 		writer.close();
 
@@ -179,12 +167,6 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 		TestUtils.readDataAndAssert(reader3, dataArray3);
 	}
 
-	private static class CustomerPartitionKey extends AbstractPartitionKey<String> {
-		public CustomerPartitionKey(String partitionKey) {
-			super(partitionKey);
-		}
-	}
-
 	private static class CustomerPartitionStrategy implements PartitionStrategy<String, String> {
 
 		CustomerPartitionResolver partitionResolver = new CustomerPartitionResolver();
@@ -204,21 +186,21 @@ public class PartitionTextFileWriterTests extends AbstractStoreTests {
 	private static class CustomerPartitionResolver implements PartitionResolver<String> {
 
 		@Override
-		public Path resolvePath(PartitionKey<String> partitionKey) {
-			return new Path(partitionKey.getValue());
+		public Path resolvePath(String partitionKey) {
+			return new Path(partitionKey);
 		}
 	}
 
 	private static class CustomerPartitionKeyResolver implements PartitionKeyResolver<String, String> {
 
 		@Override
-		public PartitionKey<String> resolvePartitionKey(String entity) {
+		public String resolvePartitionKey(String entity) {
 			if (entity.startsWith("customer1")) {
-				return new CustomerPartitionKey("customer1");
+				return "customer1";
 			} else if (entity.startsWith("customer2")) {
-				return new CustomerPartitionKey("customer2");
+				return "customer2";
 			} else if (entity.startsWith("customer3")) {
-				return new CustomerPartitionKey("customer3");
+				return "customer3";
 			}
 			return null;
 		}

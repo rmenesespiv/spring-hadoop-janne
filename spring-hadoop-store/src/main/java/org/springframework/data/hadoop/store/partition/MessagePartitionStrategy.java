@@ -26,8 +26,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 /**
- * A {@link PartitionStrategy} which is used together with {@link MessagePartitionKey}
- * providing generic partitioning support using Spring SpEL.
+ * A {@link PartitionStrategy} which is used to provide a generic partitioning support using Spring SpEL.
  *
  * @author Janne Valkealahti
  *
@@ -77,21 +76,21 @@ public class MessagePartitionStrategy<T extends Object> extends AbstractPartitio
 		}
 
 		@Override
-		public Path resolvePath(PartitionKey<Message<?>> partitionKey) {
-			return new Path(methods.getValue(expression, partitionKey.getValue(), String.class));
+		public Path resolvePath(Message<?> partitionKey) {
+			return new Path(methods.getValue(expression, partitionKey, String.class));
 		}
 
 	}
 
 	/**
-	 * A {@link PartitionKeyResolver} which simply creates a new {@link MessagePartitionKey}
-	 * with a new {@link Message} using an passed in entity.
+	 * A {@link PartitionKeyResolver} which simply creates a new {@link Message}
+	 * as a partition key using an passed in entity.
 	 */
 	public static class MessagePartitionKeyResolver<T extends Object> implements PartitionKeyResolver<T,Message<?>> {
 
 		@Override
-		public PartitionKey<Message<?>> resolvePartitionKey(T entity) {
-			return new MessagePartitionKey(MessageBuilder.withPayload(entity).build());
+		public Message<?> resolvePartitionKey(T entity) {
+			return MessageBuilder.withPayload(entity).build();
 		}
 
 	}

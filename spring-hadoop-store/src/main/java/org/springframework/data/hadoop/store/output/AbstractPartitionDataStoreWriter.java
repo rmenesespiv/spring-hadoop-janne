@@ -23,10 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.springframework.data.hadoop.store.PartitionDataStoreWriter;
 import org.springframework.data.hadoop.store.DataStoreWriter;
+import org.springframework.data.hadoop.store.PartitionDataStoreWriter;
 import org.springframework.data.hadoop.store.codec.CodecInfo;
-import org.springframework.data.hadoop.store.partition.PartitionKey;
 import org.springframework.data.hadoop.store.partition.PartitionStrategy;
 import org.springframework.data.hadoop.store.strategy.naming.FileNamingStrategy;
 import org.springframework.data.hadoop.store.strategy.naming.FileNamingStrategyFactory;
@@ -40,7 +39,7 @@ import org.springframework.data.hadoop.store.support.LifecycleObjectSupport;
  * @author Janne Valkealahti
  *
  * @param <T> the type of an entity to write
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleObjectSupport implements PartitionDataStoreWriter<T, K> {
 
@@ -136,7 +135,7 @@ public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleOb
 	}
 
 	@Override
-	public void write(T entity, PartitionKey<K> partitionKey) throws IOException {
+	public void write(T entity, K partitionKey) throws IOException {
 		DataStoreWriter<T> writer = null;
 		Path path = null;
 		if (partitionKey != null) {

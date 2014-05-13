@@ -41,10 +41,9 @@ public class MessagePartitionStrategyTests {
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers.put("region", "foo");
 		Message<String> message = MessageBuilder.withPayload("jee").copyHeaders(headers).build();
-		MessagePartitionKey key = new MessagePartitionKey(message);
-		Path resolvedPath = strategy.getPartitionResolver().resolvePath(key);
+		Path resolvedPath = strategy.getPartitionResolver().resolvePath(message);
 		assertThat(resolvedPath, notNullValue());
-		PartitionKey<Message<?>> resolvedPartitionKey = strategy.getPartitionKeyResolver().resolvePartitionKey("foo");
+		Message<?> resolvedPartitionKey = strategy.getPartitionKeyResolver().resolvePartitionKey("foo");
 		assertThat(resolvedPartitionKey, notNullValue());
 	}
 

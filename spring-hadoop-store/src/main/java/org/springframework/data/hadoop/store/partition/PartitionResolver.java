@@ -19,20 +19,20 @@ import org.apache.hadoop.fs.Path;
 
 /**
  * A {@code PartitionResolver} is a strategy interface defining
- * how {@link PartitionKey} can be resolved into the actual {@link Path}.
+ * how partition key can be resolved into the actual {@link Path}.
  *
  * @author Janne Valkealahti
  *
- * @param <K> the type of a {@link PartitionKey}
+ * @param <K> the type of a partition key
  */
 public interface PartitionResolver<K> {
 
 	/**
-	 * Resolve path with a given {@link PartitionKey}.
+	 * Resolve path with a given partition key.
 	 *
 	 * @param partitionKey the partition key
 	 * @return the path
 	 */
-	Path resolvePath(PartitionKey<K> partitionKey);
+	Path resolvePath(K partitionKey);
 
 }
